@@ -34,6 +34,7 @@ namespace TenmoClient.Services
             Console.WriteLine("0: Exit");
             Console.WriteLine("---------");
         }
+
         public LoginUser PromptForLogin()
         {
             string username = PromptForString("User name");
@@ -52,7 +53,5 @@ namespace TenmoClient.Services
         }
 
         // Add application-specific UI methods here...
-
-
     }
 }
