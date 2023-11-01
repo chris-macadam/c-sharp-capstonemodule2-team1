@@ -1,11 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30128.74
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TenmoServer", "TenmoServer\TenmoServer.csproj", "{C6335DAA-53B6-47A9-9E96-29600F83FE1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TenmoServer", "TenmoServer\TenmoServer.csproj", "{C6335DAA-53B6-47A9-9E96-29600F83FE1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TenmoClient", "TenmoClient\TenmoClient.csproj", "{C70367C0-8E0C-4766-A35A-64BD3D08E940}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TenmoClient", "TenmoClient\TenmoClient.csproj", "{C70367C0-8E0C-4766-A35A-64BD3D08E940}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C6335DAA-53B6-47A9-9E96-29600F83FE1A} = {C6335DAA-53B6-47A9-9E96-29600F83FE1A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

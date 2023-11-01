@@ -4,6 +4,7 @@ namespace TenmoServer.Models
 {
     public class Transaction
     {
+        public int Id { get; set; }
         public int TransferType { get; set; }
         public int TransferStatus { get; set; }
         public int AccountFromId { get; set; }
