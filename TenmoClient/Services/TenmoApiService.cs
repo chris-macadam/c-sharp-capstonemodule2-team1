@@ -65,7 +65,7 @@ namespace TenmoClient.Services
 
         public Transfer SetTransferStatus(Transfer transfer)
         {
-            RestRequest request = new RestRequest($"transactions/{transfer.Id}");
+            RestRequest request = new RestRequest($"transactions/{transfer.TransferId}");
             request.AddJsonBody(transfer);
             IRestResponse<Transfer> response = client.Put<Transfer>(request);
             CheckForError(response);
