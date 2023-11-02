@@ -30,7 +30,7 @@ namespace TenmoServer.DAO
         {
             Transfer transfer = new();
 
-            string query = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
+            string query = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount, created_by " +
                             "FROM transfer " +
                             "WHERE transfer_id = @transID;";
 
@@ -234,7 +234,7 @@ namespace TenmoServer.DAO
             trans.AccountFromId = Convert.ToInt32(reader["account_from"]);
             trans.AccountToId = Convert.ToInt32(reader["account_to"]);
             trans.TransactionAmount = Convert.ToDecimal(reader["amount"]);
-
+            trans.CreatedBy = Convert.ToInt32(reader["created_by"]);
             return trans;
         }
 
