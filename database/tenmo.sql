@@ -53,7 +53,7 @@ CREATE TABLE transfer (
 	CONSTRAINT PK_transfer PRIMARY KEY (transfer_id),
 	CONSTRAINT FK_transfer_account_from FOREIGN KEY (account_from) REFERENCES account (account_id),
 	CONSTRAINT FK_transfer_account_to FOREIGN KEY (account_to) REFERENCES account (account_id),
-	CONSTRAINT FK_transfer_created_by FOREIGN KEY (created_by) REFERENCES account (account_id),
+	CONSTRAINT FK_transfer_created_by FOREIGN KEY (created_by) REFERENCES tenmo_user (user_id),
 	CONSTRAINT FK_transfer_transfer_status FOREIGN KEY (transfer_status_id) REFERENCES transfer_status (transfer_status_id),
 	CONSTRAINT FK_transfer_transfer_type FOREIGN KEY (transfer_type_id) REFERENCES transfer_type (transfer_type_id),
 	CONSTRAINT CK_transfer_not_same_account CHECK  ((account_from<>account_to)),
