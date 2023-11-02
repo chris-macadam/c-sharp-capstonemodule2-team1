@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TenmoClient.Models;
 using TenmoClient.Services;
+using TenmoServer.Models;
 
 namespace TenmoClient
 {
@@ -74,21 +75,126 @@ namespace TenmoClient
             if (menuSelection == 1)
             {
                 // View your current balance
+                decimal balance = tenmoApiService.GetAccountBalance(tenmoApiService.UserId);
+                Console.WriteLine($"Your current account balance is : {balance}");
             }
 
             if (menuSelection == 2)
             {
                 // View your past transfers
+                List<Transfer> transfers = tenmoApiService.GetTransfers();
+                if (transfers.Count == 0)
+                {
+                    Console.WriteLine("No previous transfers.");
+                }
+                else
+                {
+                    Console.WriteLine("-------------------------------------------");
+                    Console.WriteLine("Transfers");
+                    Console.WriteLine("ID          From/To                 Amount");
+                    Console.WriteLine("-------------------------------------------");
+                    foreach (Transfer transfer in transfers)
+                    {
+                        if (transfer.AccountToId == tenmoApiService.UserId)
+                        {
+                            Console.WriteLine($"{transfer.TransferId}          From: {transfer.AccountFromName}                 $ {transfer.TransactionAmount}");
+                        }
+                        else if (transfer.AccountFromId == tenmoApiService.UserId)
+                        {
+                            Console.WriteLine($"{transfer.TransferId}          To: {transfer.AccountToName}                 $ {transfer.TransactionAmount}");
+                        }
+                    }
+                    Console.WriteLine("---------");
+                    menuSelection = console.PromptForInteger($"Please enter transfer ID to view details (0 to cancel): ", 0, int.MaxValue);
+                    foreach (Transfer transfer in transfers)
+                    {
+                        if (menuSelection == 0)
+                        {
+                            return false;
+                        }
+                        if (menuSelection == transfer.TransferId)
+                        {
+                            Console.WriteLine("--------------------------------------------");
+                            Console.WriteLine("Transfer Details");
+                            Console.WriteLine("--------------------------------------------");
+                            Console.WriteLine($"Id: {transfer.TransferId}");
+                            Console.WriteLine($"From: {transfer.AccountFromName}");
+                            Console.WriteLine($"To: {transfer.AccountToName}");
+                            Console.WriteLine($"Type: {transfer.TransferType}");
+                            Console.WriteLine($"Status: {transfer.TransferStatus}");
+                            Console.WriteLine($"Amount: {transfer.TransactionAmount}");
+                        }
+                    }
+                }
             }
 
             if (menuSelection == 3)
             {
                 // View your pending requests
+                List<Transfer> pendingTransfers = tenmoApiService.GetPendingTransers();
+                if (pendingTransfers.Count == 0)
+                {
+                    Console.WriteLine("No previous transfers.");
+                }
+                else
+                {
+                    Console.WriteLine("-------------------------------------------");
+                    Console.WriteLine("Pending Transfers");
+                    Console.WriteLine("ID          To                     Amount");
+                    Console.WriteLine("-------------------------------------------");
+                    foreach (Transfer transfer in pendingTransfers)
+                    {
+                        if (transfer.TransferStatus == 0)
+                        {
+                            Console.WriteLine($"{transfer.TransferId}          {transfer.AccountToName}                     $ {transfer.TransactionAmount}");
+                        }
+                    }
+                    Console.WriteLine("---------");
+                    menuSelection = console.PromptForInteger($"Please enter transferID to approve/reject (0 to cancel): ", 0, int.MaxValue);
+                    foreach (Transfer transfer in pendingTransfers)
+                    {
+                        if (menuSelection == 0)
+                        {
+                            return false;
+                        }
+                        if (menuSelection == transfer.TransferId)
+                        {
+                            Console.WriteLine("1: Approve");
+                            Console.WriteLine("2: Reject");
+                            Console.WriteLine("3: Don't approve or reject");
+                            Console.WriteLine("---------");
+                            menuSelection = console.PromptForInteger($"Please choose an option: ", 0, 2);
+                            if (menuSelection == 0)
+                            {
+                                // Don't approve or reject
+                                transfer.TransferStatus = 0;
+                                tenmoApiService.SetTransferStatus(transfer);
+                            }
+                            else if (menuSelection == 1)
+                            {
+                                // Approve
+                                transfer.TransferStatus = 1;
+                                tenmoApiService.SetTransferStatus(transfer);
+                            }
+                            else if (menuSelection == 2)
+                            {
+                                //Reject
+                                transfer.TransferStatus = 2;
+                                tenmoApiService.SetTransferStatus(transfer);
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
             }
 
             if (menuSelection == 4)
             {
                 // Send TE bucks
+                 
             }
 
             if (menuSelection == 5)
@@ -108,7 +214,7 @@ namespace TenmoClient
 
         private void Login()
         {
-            LoginUser loginUser = console.PromptForLogin();
+            TenmoClient.Models.LoginUser loginUser = console.PromptForLogin();
             if (loginUser == null)
             {
                 return;
@@ -135,7 +241,7 @@ namespace TenmoClient
 
         private void Register()
         {
-            LoginUser registerUser = console.PromptForLogin();
+            TenmoClient.Models.LoginUser registerUser = console.PromptForLogin();
             if (registerUser == null)
             {
                 return;
