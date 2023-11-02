@@ -211,6 +211,7 @@ namespace TenmoServer.DAO
                     }
                 }
                 updatedTransfer = GetTransferById(transferId);
+
             }
             catch (SqlException ex)
             {
@@ -218,6 +219,55 @@ namespace TenmoServer.DAO
             }
 
             return updatedTransfer;
+        }
+
+        public bool TransferFunds(int toUser, int fromUser, decimal amount)
+        {
+            string toUserQuery =
+                "UPDATE account " +
+                "SET balance += @transfer_amount " +
+                "WHERE user_id = @to_user;";
+
+            string fromUserQuery =
+                "UPDATE account " +
+                "SET balance -= @transfer_amount " +
+                "WHERE user_id = @from_user;";
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                var cmd = new SqlCommand(toUserQuery, conn);
+                SqlTransaction transaction = conn.BeginTransaction();
+
+                try
+                {
+                    cmd.Parameters.AddWithValue("@transfer_amount", amount);
+                    cmd.Parameters.AddWithValue("@to_user", toUser);
+                    int numberOfRows = cmd.ExecuteNonQuery();
+                    if (numberOfRows == 0)
+                    {
+                        throw new DaoException("Zero rows affected, expected at least one");
+                    }
+                    else
+                    {
+                        cmd = new SqlCommand(fromUserQuery, conn);
+                        cmd.Parameters.AddWithValue("@transfer_amount", amount);
+                        cmd.Parameters.AddWithValue("@from_user", fromUser);
+                        numberOfRows = cmd.ExecuteNonQuery();
+                        if (numberOfRows == 0)
+                        {
+                            throw new DaoException("Zero rows affected, expected at least one");
+                        }
+                    }
+                }
+                catch(Exception ex) 
+                {
+                    transaction.Rollback();
+                    throw new DaoException("A SQL exception occured.", ex);
+                }
+
+                return true;
+            }
         }
 
         /// <summary>

@@ -173,6 +173,12 @@ namespace TenmoServer.DAO
             return balance;
         }
 
+        public bool CheckUserBalance(decimal minAmount, int userId)
+        {
+            decimal userBalance = GetUserBalance(userId);
+            return userBalance >= minAmount;
+        }
+
         private User MapRowToUser(SqlDataReader reader)
         {
             User user = new User();
