@@ -150,9 +150,9 @@ namespace TenmoServer.DAO
             return newUser;
         }
 
-        public double GetUserBalance(int userId)
+        public decimal GetUserBalance(int userId)
         {
-            double balance = 0;
+            decimal balance = 0;
             string query = "SELECT SUM(balance) FROM account WHERE user_id = @id;";
 
             try
@@ -163,7 +163,7 @@ namespace TenmoServer.DAO
 
                     var cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@id", userId);
-                    balance = (double)cmd.ExecuteScalar();
+                    balance = (decimal)cmd.ExecuteScalar();
                 }
             }
             catch (SqlException ex)
