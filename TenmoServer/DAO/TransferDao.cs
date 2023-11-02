@@ -235,6 +235,10 @@ namespace TenmoServer.DAO
             trans.AccountToId = Convert.ToInt32(reader["account_to"]);
             trans.TransactionAmount = Convert.ToDecimal(reader["amount"]);
             trans.CreatedBy = Convert.ToInt32(reader["created_by"]);
+<<<<<<< HEAD
+
+=======
+>>>>>>> 3cec1ecef9358cd1398f1ecc763657c572eb320b
             return trans;
         }
 
