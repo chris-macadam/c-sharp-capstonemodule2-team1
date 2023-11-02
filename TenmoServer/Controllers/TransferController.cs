@@ -63,7 +63,7 @@ namespace TenmoServer.Controllers
             return transfers;
         }
 
-        [HttpPut("transfer/{transferId}")]
+        [HttpPut("{transferId}")]
         public ActionResult<Transfer> UpdateTransferStatus(int transferId, Transfer transfer)
         {
             transfer.TransferId = transferId;
