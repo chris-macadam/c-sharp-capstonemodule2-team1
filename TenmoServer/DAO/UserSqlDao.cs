@@ -150,6 +150,29 @@ namespace TenmoServer.DAO
             return newUser;
         }
 
+        public decimal GetUserBalance(int userId)
+        {
+            decimal balance = 0;
+            string query = "SELECT SUM(balance) FROM account WHERE user_id = @id;";
+
+            try
+            {
+                using (var conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    var cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", userId);
+                    balance = (decimal)cmd.ExecuteScalar();
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new DaoException("SQL exception occurred", ex);
+            }
+            return balance;
+        }
+
         private User MapRowToUser(SqlDataReader reader)
         {
             User user = new User();

@@ -105,7 +105,7 @@ namespace TenmoServer.DAO
         /// <param name="amount">The amount that is being sent.</param>
         /// <returns>Returns a Transfer object with the transaction details.</returns>
         /// <exception cref="DaoException"></exception>
-        public Transfer CreateTransfer(int transferType, int accountFrom, int accountTo, decimal amount)
+        public Transfer CreateTransfer(Transfer transfer)
         {
             Transfer newTransaction = null;
 
@@ -120,11 +120,11 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
                     var cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@transferType", transferType);
+                    cmd.Parameters.AddWithValue("@transferType", transfer.TransferType);
                     cmd.Parameters.AddWithValue("@transferStatus", 1);
-                    cmd.Parameters.AddWithValue("@accountFrom", accountFrom);
-                    cmd.Parameters.AddWithValue("@accountTo", accountTo);
-                    cmd.Parameters.AddWithValue("@AMOUNT", amount);
+                    cmd.Parameters.AddWithValue("@accountFrom", transfer.AccountFromId);
+                    cmd.Parameters.AddWithValue("@accountTo", transfer.AccountToId);
+                    cmd.Parameters.AddWithValue("@AMOUNT", transfer.TransactionAmount);
 
                     newTranferId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
@@ -186,7 +186,7 @@ namespace TenmoServer.DAO
         /// </summary>
         /// <param name="transferId">Transfer id of the Transfer to be changed.</param>
         /// <param name="statusCode">New status code</param>
-        /// <returns></returns>
+        /// <returns>Returns updated status if successful, null if not.</returns>
         /// <exception cref="DaoException"></exception>
         public Transfer SetTransferStatus(int transferId, int statusCode)
         {
