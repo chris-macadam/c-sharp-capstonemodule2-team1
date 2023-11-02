@@ -76,117 +76,42 @@ namespace TenmoClient
             {
                 // View your current balance
                 decimal balance = tenmoApiService.GetAccountBalance(tenmoApiService.UserId);
-                Console.WriteLine($"Your current account balance is : {balance}");
+                console.PrintAccountBalance(balance);
             }
 
             if (menuSelection == 2)
             {
                 // View your past transfers
                 List<Transfer> transfers = tenmoApiService.GetTransfers();
-                if (transfers.Count == 0)
+                console.PrintPastTransactions(transfers, tenmoApiService);                
+                menuSelection = console.PromptForInteger($"Please enter transfer ID to view details (0 to cancel): ", 0, int.MaxValue);
+                if (menuSelection == 0)
                 {
-                    Console.WriteLine("No previous transfers.");
+                    return false;
                 }
                 else
                 {
-                    Console.WriteLine("-------------------------------------------");
-                    Console.WriteLine("Transfers");
-                    Console.WriteLine("ID          From/To                 Amount");
-                    Console.WriteLine("-------------------------------------------");
-                    foreach (Transfer transfer in transfers)
-                    {
-                        if (transfer.AccountToId == tenmoApiService.UserId)
-                        {
-                            Console.WriteLine($"{transfer.TransferId}          From: {transfer.AccountFromName}                 $ {transfer.TransactionAmount}");
-                        }
-                        else if (transfer.AccountFromId == tenmoApiService.UserId)
-                        {
-                            Console.WriteLine($"{transfer.TransferId}          To: {transfer.AccountToName}                 $ {transfer.TransactionAmount}");
-                        }
-                    }
-                    Console.WriteLine("---------");
-                    menuSelection = console.PromptForInteger($"Please enter transfer ID to view details (0 to cancel): ", 0, int.MaxValue);
-                    foreach (Transfer transfer in transfers)
-                    {
-                        if (menuSelection == 0)
-                        {
-                            return false;
-                        }
-                        if (menuSelection == transfer.TransferId)
-                        {
-                            Console.WriteLine("--------------------------------------------");
-                            Console.WriteLine("Transfer Details");
-                            Console.WriteLine("--------------------------------------------");
-                            Console.WriteLine($"Id: {transfer.TransferId}");
-                            Console.WriteLine($"From: {transfer.AccountFromName}");
-                            Console.WriteLine($"To: {transfer.AccountToName}");
-                            Console.WriteLine($"Type: {transfer.TransferType}");
-                            Console.WriteLine($"Status: {transfer.TransferStatus}");
-                            Console.WriteLine($"Amount: {transfer.TransactionAmount}");
-                        }
-                    }
-                }
+                    console.PrintTransactionDetails(menuSelection, transfers);
+                }                
             }
 
             if (menuSelection == 3)
             {
                 // View your pending requests
-                List<Transfer> pendingTransfers = tenmoApiService.GetPendingTransers();
-                if (pendingTransfers.Count == 0)
+                List<Transfer> pendingTransfers = tenmoApiService.GetPendingTransfers();
+                console.PrintPendingRequests(pendingTransfers);
+                menuSelection = console.PromptForInteger($"Please enter transferID to approve/reject (0 to cancel): ", 0, int.MaxValue);
+                foreach (Transfer transfer in pendingTransfers)
                 {
-                    Console.WriteLine("No previous transfers.");
-                }
-                else
-                {
-                    Console.WriteLine("-------------------------------------------");
-                    Console.WriteLine("Pending Transfers");
-                    Console.WriteLine("ID          To                     Amount");
-                    Console.WriteLine("-------------------------------------------");
-                    foreach (Transfer transfer in pendingTransfers)
+                    if (menuSelection == 0)
                     {
-                        if (transfer.TransferStatus == 0)
-                        {
-                            Console.WriteLine($"{transfer.TransferId}          {transfer.AccountToName}                     $ {transfer.TransactionAmount}");
-                        }
+                        return false;
                     }
-                    Console.WriteLine("---------");
-                    menuSelection = console.PromptForInteger($"Please enter transferID to approve/reject (0 to cancel): ", 0, int.MaxValue);
-                    foreach (Transfer transfer in pendingTransfers)
+                    if (menuSelection == transfer.TransferId)
                     {
-                        if (menuSelection == 0)
-                        {
-                            return false;
-                        }
-                        if (menuSelection == transfer.TransferId)
-                        {
-                            Console.WriteLine("1: Approve");
-                            Console.WriteLine("2: Reject");
-                            Console.WriteLine("3: Don't approve or reject");
-                            Console.WriteLine("---------");
-                            menuSelection = console.PromptForInteger($"Please choose an option: ", 0, 2);
-                            if (menuSelection == 0)
-                            {
-                                // Don't approve or reject
-                                transfer.TransferStatus = 0;
-                                tenmoApiService.SetTransferStatus(transfer);
-                            }
-                            else if (menuSelection == 1)
-                            {
-                                // Approve
-                                transfer.TransferStatus = 1;
-                                tenmoApiService.SetTransferStatus(transfer);
-                            }
-                            else if (menuSelection == 2)
-                            {
-                                //Reject
-                                transfer.TransferStatus = 2;
-                                tenmoApiService.SetTransferStatus(transfer);
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                        }
+                        console.PrintPendingTransferMenu();
+                        menuSelection = console.PromptForInteger($"Please choose an option: ", 0, 2);
+                        console.UpdateTransferStatus(menuSelection, transfer, tenmoApiService);
                     }
                 }
             }
