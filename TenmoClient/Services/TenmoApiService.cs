@@ -30,9 +30,9 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
-        public Transfer SendTransfer(Transfer transaction)
+        public Transfer SendTransfer(Transfer transaction, int userId)
         {
-            RestRequest request = new RestRequest("transfer");
+            RestRequest request = new RestRequest($"transfer/{userId}");
             request.AddJsonBody(transaction);
             IRestResponse<Transfer> response = client.Post<Transfer>(request);
             CheckForError(response);
@@ -41,7 +41,7 @@ namespace TenmoClient.Services
 
         public List<Transfer> GetTransfers()
         {
-            RestRequest request = new RestRequest("transfer");
+            RestRequest request = new RestRequest($"transfer/all/{UserId}");
             IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
             CheckForError(response);
             return response.Data;
