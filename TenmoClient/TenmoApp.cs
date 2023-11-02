@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TenmoClient.Models;
 using TenmoClient.Services;
+using TenmoServer.Models;
 
 namespace TenmoClient
 {
@@ -74,21 +75,51 @@ namespace TenmoClient
             if (menuSelection == 1)
             {
                 // View your current balance
+                decimal balance = tenmoApiService.GetAccountBalance(tenmoApiService.UserId);
+                console.PrintAccountBalance(balance);
             }
 
             if (menuSelection == 2)
             {
                 // View your past transfers
+                List<Transfer> transfers = tenmoApiService.GetTransfers();
+                console.PrintPastTransactions(transfers, tenmoApiService);                
+                menuSelection = console.PromptForInteger($"Please enter transfer ID to view details (0 to cancel): ", 0, int.MaxValue);
+                if (menuSelection == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    console.PrintTransactionDetails(menuSelection, transfers);
+                }                
             }
 
             if (menuSelection == 3)
             {
                 // View your pending requests
+                List<Transfer> pendingTransfers = tenmoApiService.GetPendingTransfers();
+                console.PrintPendingRequests(pendingTransfers);
+                menuSelection = console.PromptForInteger($"Please enter transferID to approve/reject (0 to cancel): ", 0, int.MaxValue);
+                foreach (Transfer transfer in pendingTransfers)
+                {
+                    if (menuSelection == 0)
+                    {
+                        return false;
+                    }
+                    if (menuSelection == transfer.TransferId)
+                    {
+                        console.PrintPendingTransferMenu();
+                        menuSelection = console.PromptForInteger($"Please choose an option: ", 0, 2);
+                        console.UpdateTransferStatus(menuSelection, transfer, tenmoApiService);
+                    }
+                }
             }
 
             if (menuSelection == 4)
             {
                 // Send TE bucks
+                 
             }
 
             if (menuSelection == 5)
@@ -108,7 +139,7 @@ namespace TenmoClient
 
         private void Login()
         {
-            LoginUser loginUser = console.PromptForLogin();
+            TenmoClient.Models.LoginUser loginUser = console.PromptForLogin();
             if (loginUser == null)
             {
                 return;
@@ -135,7 +166,7 @@ namespace TenmoClient
 
         private void Register()
         {
-            LoginUser registerUser = console.PromptForLogin();
+            TenmoClient.Models.LoginUser registerUser = console.PromptForLogin();
             if (registerUser == null)
             {
                 return;
