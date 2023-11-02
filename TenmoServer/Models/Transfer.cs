@@ -26,6 +26,9 @@ namespace TenmoServer.Models
         [Required(ErrorMessage = "Amount to be transferred is required.")]
         public decimal TransactionAmount { get; set; }
 
+        [Required(ErrorMessage = "Created by is required.")]
+        public int CreatedBy { get; set; }
+
         public Transfer()
         {
 
