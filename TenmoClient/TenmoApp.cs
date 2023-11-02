@@ -127,7 +127,7 @@ namespace TenmoClient
                 List<User> users =tenmoApiService.GetUsers();
                 foreach (User user in users)
                 {
-                Console.WriteLine($"{tenmoApiService.UserId} | {tenmoApiService.Username}");
+                Console.WriteLine($"{user.UserId} | {user.Username}");
                 }
                 Console.WriteLine($"|-----------------------------------|");
 
