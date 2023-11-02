@@ -241,11 +241,11 @@ namespace TenmoServer.DAO
             using (var conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                var cmd = new SqlCommand(toUserQuery, conn);
                 SqlTransaction transaction = conn.BeginTransaction();
 
                 try
                 {
+                    var cmd = new SqlCommand(toUserQuery, conn);
                     cmd.Parameters.AddWithValue("@transfer_amount", amount);
                     cmd.Parameters.AddWithValue("@to_user", toUser);
                     int numberOfRows = cmd.ExecuteNonQuery();
