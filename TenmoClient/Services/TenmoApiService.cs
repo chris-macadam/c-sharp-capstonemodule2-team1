@@ -57,7 +57,7 @@ namespace TenmoClient.Services
 
         public List<Transfer> GetPendingTransfers()
         {
-            RestRequest request = new RestRequest("transfer/pending");
+            RestRequest request = new RestRequest($"transfer/pending/{UserId}");
             IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
             CheckForError(response);
             return response.Data;
