@@ -32,7 +32,7 @@ namespace TenmoClient.Services
 
         public Transfer SendTransfer(Transfer transaction)
         {
-            RestRequest request = new RestRequest("transactions");
+            RestRequest request = new RestRequest("transfer");
             request.AddJsonBody(transaction);
             IRestResponse<Transfer> response = client.Post<Transfer>(request);
             CheckForError(response);
@@ -41,7 +41,7 @@ namespace TenmoClient.Services
 
         public List<Transfer> GetTransfers()
         {
-            RestRequest request = new RestRequest("transactions");
+            RestRequest request = new RestRequest("transfer");
             IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
             CheckForError(response);
             return response.Data;
@@ -49,23 +49,23 @@ namespace TenmoClient.Services
 
         public Transfer GetTransferByID(int id)
         {
-            RestRequest request = new RestRequest($"transactions/{id}");
+            RestRequest request = new RestRequest($"transfer/{id}");
             IRestResponse<Transfer> response = client.Get<Transfer>(request);
             CheckForError(response);
             return response.Data;
         }
 
-        public List<Transfer> GetPendingTransers()
+        public List<Transfer> GetPendingTransfers()
         {
-            RestRequest request = new RestRequest("transactions/pending");
+            RestRequest request = new RestRequest("transfer/pending");
             IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
             CheckForError(response);
             return response.Data;
         }
 
-        public Transfer SetTransferStatus(Transfer transfer)
+        public Transfer UpdateTransfer(Transfer transfer)
         {
-            RestRequest request = new RestRequest($"transactions/{transfer.TransferId}");
+            RestRequest request = new RestRequest($"transfer/{transfer.TransferId}");
             request.AddJsonBody(transfer);
             IRestResponse<Transfer> response = client.Put<Transfer>(request);
             CheckForError(response);
