@@ -186,7 +186,7 @@ namespace TenmoServer.DAO
         /// </summary>
         /// <param name="transferId">Transfer id of the Transfer to be changed.</param>
         /// <param name="statusCode">New status code</param>
-        /// <returns></returns>
+        /// <returns>Returns updated status if successful, null if not.</returns>
         /// <exception cref="DaoException"></exception>
         public Transfer SetTransferStatus(int transferId, int statusCode)
         {
