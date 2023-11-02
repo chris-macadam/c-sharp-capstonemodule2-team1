@@ -12,6 +12,7 @@ namespace TenmoServer.Controllers
     public class TransferController : ControllerBase
     {
         private ITransferDao transferDao;
+        private IUserDao userDao;
 
         public TransferController (ITransferDao transferDao)
         {
@@ -70,8 +71,17 @@ namespace TenmoServer.Controllers
 
             try
             {
-                Transfer result = transferDao.SetTransferStatus(transferId, transfer.TransferStatus);
-                return Ok(result);
+                if(userDao.CheckUserBalance(transfer.TransactionAmount, transfer.AccountFromId))
+                {
+
+
+                    Transfer result = transferDao.SetTransferStatus(transferId, transfer.TransferStatus);
+                    return Ok(result);
+                }
+                else
+                {
+                    return UnprocessableEntity();
+                }
             }
             catch (DaoException)
             {
