@@ -54,6 +54,7 @@ namespace TenmoClient.Services
             return loginUser;
         }
 
+
         // Add application-specific UI methods here...
         public void PrintAccountBalance(decimal balance)
         {
@@ -141,21 +142,26 @@ namespace TenmoClient.Services
             if (menuSelection == 0)
             {
                 // Don't approve or reject
-                transfer.TransferStatus = 0;
+                transfer.TransferStatus = 1;
                 tenmoApiService.UpdateTransfer(transfer);
             }
             else if (menuSelection == 1)
             {
                 // Approve
-                transfer.TransferStatus = 1;
+                transfer.TransferStatus = 2;
                 tenmoApiService.UpdateTransfer(transfer);
             }
             else if (menuSelection == 2)
             {
                 //Reject
-                transfer.TransferStatus = 2;
+                transfer.TransferStatus = 3;
                 tenmoApiService.UpdateTransfer(transfer);
             }
+        }
+
+        public void SendTEBucks()
+        {
+            
         }
     }
 }
