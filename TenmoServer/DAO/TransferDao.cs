@@ -152,7 +152,7 @@ namespace TenmoServer.DAO
                             "JOIN account ON transfer.account_from = account.user_id AND transfer.account_to = account.user_id " +
                             "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
                             "WHERE transfer.transfer_status_id = 1 " +
-                                "AND created_by != @id" +
+                                "AND created_by != @id " +
                                 "AND transfer.account_from = " +
                                 "(SELECT account_id FROM account where user_id = @id) " +
                                 "OR transfer.account_to = " +
