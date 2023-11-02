@@ -147,11 +147,16 @@ namespace TenmoServer.DAO
         {
             List<Transfer> pendingList = new List<Transfer>();
 
-            string query = "SELECT transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount " +
+            string query = "SELECT transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount, created_by " +
                             "FROM transfer " +
                             "JOIN account ON transfer.account_from = account.user_id AND transfer.account_to = account.user_id " +
                             "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
-                            "WHERE transfer.transfer_status_id = 1 AND created_by = @id AND transfer.account_from = @id  OR transfer.account_to = @id;";
+                            "WHERE transfer.transfer_status_id = 1 " +
+                                "AND created_by != @id" +
+                                "AND transfer.account_from = " +
+                                "(SELECT account_id FROM account where user_id = @id) " +
+                                "OR transfer.account_to = " +
+                                "(SELECT account_id FROM account where user_id = @id);";
 
             try
             {
@@ -285,10 +290,7 @@ namespace TenmoServer.DAO
             trans.AccountToId = Convert.ToInt32(reader["account_to"]);
             trans.TransactionAmount = Convert.ToDecimal(reader["amount"]);
             trans.CreatedBy = Convert.ToInt32(reader["created_by"]);
-<<<<<<< HEAD
 
-=======
->>>>>>> 3cec1ecef9358cd1398f1ecc763657c572eb320b
             return trans;
         }
 
