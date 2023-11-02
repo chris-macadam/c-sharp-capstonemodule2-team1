@@ -6,12 +6,12 @@ namespace TenmoServer.DAO
 {
     public interface ITransferDao
     {
-        Transfer CreateTransfer(int transferType, int accountFrom, int accountTo, decimal amount);
-        IList<Transfer> GetAllTransfers(int id);
+        Transfer CreateTransfer(Transfer transfer, int userId);
+        List<Transfer> GetAllTransfers(int id);
         Transfer GetTransferById(int transferId);
         // Consider below if necessary
         //Transaction RequestTransfer();
-        IList<Transfer> GetPendingTransfers(int id);
+        List<Transfer> GetPendingTransfers(int id);
         Transfer SetTransferStatus(int transferId, int statusCode);
     }
 }

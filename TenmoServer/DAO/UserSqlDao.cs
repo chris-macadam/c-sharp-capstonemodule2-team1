@@ -78,9 +78,9 @@ namespace TenmoServer.DAO
             return user;
         }
 
-        public IList<User> GetUsers()
+        public List<User> GetUsers()
         {
-            IList<User> users = new List<User>();
+            List<User> users = new List<User>();
 
             string sql = "SELECT user_id, username, password_hash, salt FROM tenmo_user";
 

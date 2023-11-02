@@ -62,9 +62,9 @@ namespace TenmoServer.DAO
         /// <param name="userId">The account identification number being searched for.</param>
         /// <returns>A List of Transfer objects.</returns>
         /// <exception cref="DaoException"></exception>
-        public IList<Transfer> GetAllTransfers(int userId)
+        public List<Transfer> GetAllTransfers(int userId)
         {
-            IList<Transfer> transferList = new List<Transfer>();
+            List<Transfer> transferList = new List<Transfer>();
 
             string query = "SELECT transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount " +
                             "FROM transfer " +
@@ -143,9 +143,9 @@ namespace TenmoServer.DAO
         /// <param name="userId">Account identification number for the active user.</param>
         /// <returns>Returns a list of Transfer objects.</returns>
         /// <exception cref="DaoException"></exception>
-        public IList<Transfer> GetPendingTransfers(int userId)
+        public List<Transfer> GetPendingTransfers(int userId)
         {
-            IList<Transfer> pendingList = new List<Transfer>();
+            List<Transfer> pendingList = new List<Transfer>();
 
             string query = "SELECT transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount " +
                             "FROM transfer " +

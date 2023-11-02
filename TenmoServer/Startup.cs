@@ -54,6 +54,7 @@ namespace TenmoServer
             services.AddSingleton<ITokenGenerator>(sp => new JwtGenerator(Configuration["JwtSecret"]));
             services.AddSingleton<IPasswordHasher>(sp => new PasswordHasher());
             services.AddTransient<IUserDao>(sp => new UserSqlDao(connectionString));
+            services.AddTransient<ITransferDao>(sp => new TransferDao(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
