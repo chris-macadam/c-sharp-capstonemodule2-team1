@@ -82,7 +82,8 @@ namespace TenmoServer.DAO
         {
             List<User> users = new List<User>();
 
-            string sql = "SELECT user_id, username, password_hash, salt FROM tenmo_user";
+            string sql = "SELECT user_id, username, password_hash, salt " +
+                        "FROM tenmo_user;";
 
             try
             {
