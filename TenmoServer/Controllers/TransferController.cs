@@ -24,9 +24,9 @@ namespace TenmoServer.Controllers
         public ActionResult<Transfer> CreateTransfer(Transfer transfer, int userId)
         {
             Transfer createdTransfer = transferDao.CreateTransfer(transfer, userId);
-            if (transfer.TransferStatus == 2)
+            if (createdTransfer.TransferStatus == 2)
             {
-                transferDao.TransferFunds(transfer);
+                transferDao.TransferFunds(createdTransfer);
             }
             return Created($"/reservations/{createdTransfer.TransferId}", createdTransfer);
         }
