@@ -22,6 +22,15 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
+        public Account GetAccountFromUserId(int userId) 
+        {
+            RestRequest request = new RestRequest($"users/{UserId}/account");
+            IRestResponse<Account> response = client.Get<Account>(request);
+            CheckForError(response);
+            return response.Data;
+        }
+
+        /*
         public decimal GetAccountBalance(int userId)
         {
             RestRequest request = new RestRequest($"users/{UserId}/balance");
@@ -29,6 +38,7 @@ namespace TenmoClient.Services
             CheckForError(response);
             return response.Data;
         }
+        */
 
         public Transfer SendTransfer(Transfer transaction, int userId)
         {

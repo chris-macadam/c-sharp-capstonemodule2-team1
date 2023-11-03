@@ -40,10 +40,10 @@ namespace TenmoServer.Controllers
             return user;
         }
 
-        [HttpGet("{userId}/balance")]
-        public decimal GetAccountBalance(int userId)
+        [HttpGet("{userId}/account")]
+        public Account GetAccountByUserId(int userId)
         {
-            return userDao.GetUserBalance(userId);
+            return userDao.GetAccountByUserId(userId);
         }
     }
 }

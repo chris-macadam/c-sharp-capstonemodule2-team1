@@ -9,7 +9,8 @@ namespace TenmoServer.DAO
         User GetUserByUsername(string username);
         User CreateUser(string username, string password);
         List<User> GetUsers();
-        decimal GetUserBalance(int userId);
+        Account GetAccountByUserId(int userId);
+        //decimal GetUserBalance(int userId);
         bool CheckUserBalance(decimal minAmount, int userId);
     }
 }
