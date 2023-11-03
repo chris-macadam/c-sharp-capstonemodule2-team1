@@ -136,7 +136,7 @@ namespace TenmoClient.Services
                 Console.WriteLine("-------------------------------------------");
                 foreach (Transfer transfer in pendingTransfers)
                 {
-                    if (transfer.TransferStatus == 0)
+                    if (transfer.TransferStatus == 1)
                     {
                         Console.WriteLine($"{transfer.TransferId}          {transfer.AccountToName}                     $ {transfer.TransactionAmount}");
                     }

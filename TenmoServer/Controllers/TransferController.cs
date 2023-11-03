@@ -15,9 +15,10 @@ namespace TenmoServer.Controllers
         private ITransferDao transferDao;
         private IUserDao userDao;
 
-        public TransferController (ITransferDao transferDao)
+        public TransferController (ITransferDao transferDao, IUserDao userDao)
         {
             this.transferDao = transferDao;
+            this.userDao = userDao;
         }
 
         [HttpPost("{userId}")]
@@ -76,10 +77,9 @@ namespace TenmoServer.Controllers
 
             try
             {
-                if(userDao.CheckUserBalance(transfer.TransactionAmount, transfer.AccountFromId))
+                bool HasSufficientBalance = userDao.CheckUserBalance(transfer.TransactionAmount, transfer.AccountFromId);
+                if (HasSufficientBalance)
                 {
-
-
                     Transfer result = transferDao.SetTransferStatus(transferId, transfer.TransferStatus);
                     return Ok(result);
                 }

@@ -153,14 +153,13 @@ namespace TenmoServer.DAO
 
             string query = "SELECT DISTINCT transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount, created_by " +
                             "FROM transfer " +
-                            "JOIN account ON transfer.account_from = account.user_id AND transfer.account_to = account.user_id " +
+                            "JOIN account ON transfer.account_from = account.account_id OR transfer.account_to = account.account_id " +
                             "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
                             "WHERE transfer.transfer_status_id = 1 " +
-                                "AND created_by != @id " +
-                                "AND transfer.account_from = " +
-                                "(SELECT account_id FROM account where user_id = @id) " +
-                                "OR transfer.account_to = " +
-                                "(SELECT account_id FROM account where user_id = @id);";
+                                "AND transfer.account_from IN " +
+                                    "(SELECT account_id FROM account where user_id = @id) " +
+                                "OR transfer.account_to IN " +
+                                    "(SELECT account_id FROM account where user_id = @id);";
 
             try
             {
@@ -329,9 +328,7 @@ namespace TenmoServer.DAO
             trans.TransferType = Convert.ToInt32(reader["transfer_type_id"]);
             trans.TransferStatus = Convert.ToInt32(reader["transfer_status_id"]);
             trans.AccountFromId = Convert.ToInt32(reader["account_from"]);
-            trans.AccountFromName = GetUsernameFromUserId(trans.AccountFromId);
             trans.AccountToId = Convert.ToInt32(reader["account_to"]);
-            trans.AccountToName = GetUsernameFromUserId(trans.AccountToId);
             trans.TransactionAmount = Convert.ToDecimal(reader["amount"]);
             trans.CreatedBy = Convert.ToInt32(reader["created_by"]);
 
