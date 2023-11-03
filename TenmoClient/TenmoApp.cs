@@ -122,16 +122,23 @@ namespace TenmoClient
                 // Send TE bucks
 
                 List<User> users =tenmoApiService.GetUsers();
-
+                int recipientId;
+                decimal amount;
                 console.PrintUserList(users, tenmoApiService);
+                //checks to make sure User isn't giving money to themselves.
+                do
+                    recipientId = console.PromptForInteger("Enter the recipient's user Id: ");
+                while (recipientId == tenmoApiService.UserId);
+                //checks to make sure the amount is positive and not zero
+                do
+                    amount = console.PromptForDecimal("Enter the amount to send: ");
+                while (amount <= 0);
 
-                int recipientId = console.PromptForInteger("Enter the recipient's user Id: ");
-                decimal amount = console.PromptForDecimal("Enter the amount to send: ");
-                decimal balance = tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).Balance
                 Console.WriteLine($"You are about to send ${amount} to {recipientId}.");
                 string confirm = console.PromptForString($"Confirm the transfer (yes/no): ");
                 if (confirm.Contains("yes", StringComparison.OrdinalIgnoreCase))
                 {
+                    decimal balance = tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).Balance;
                     if (amount <= balance)
                     {
                         Transfer transfer = new Transfer()
