@@ -230,6 +230,7 @@ namespace TenmoServer.DAO
                     {
                         throw new DaoException("Zero rows affected, expected at least one");
                     }
+                    transaction.Commit();
                 }
                 catch (Exception ex)
                 {
@@ -283,6 +284,7 @@ namespace TenmoServer.DAO
                     {
                         throw new DaoException("Zero rows affected, expected at least one");
                     }
+                    transaction.Commit();
                 }
                 catch (Exception ex)
                 {
