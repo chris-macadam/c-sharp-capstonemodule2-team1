@@ -250,7 +250,7 @@ namespace TenmoServer.DAO
                                         "WHERE account_id = @accountFrom;";
 
             string secQuery = "UPDATE account " +
-                                "SET balance += @amount " +
+                                "SET balance += @amountTo " +
                                 "WHERE account_id = @accountTo;";
 
             using (var conn = new SqlConnection(connectionString))
@@ -273,7 +273,7 @@ namespace TenmoServer.DAO
                     }
 
                     cmd.CommandText = secQuery;
-                    cmd.Parameters.AddWithValue("@amount", transfer.TransactionAmount);
+                    cmd.Parameters.AddWithValue("@amountTo", transfer.TransactionAmount);
                     cmd.Parameters.AddWithValue("accountTo", transfer.AccountToId);
                     numberOfRows = cmd.ExecuteNonQuery();
                     if (numberOfRows == 0)
@@ -289,7 +289,7 @@ namespace TenmoServer.DAO
             }
             return true;
             }
-        }
+        
 
         /// <summary>
         /// Maps a Transfer table row to a Transfer object.
