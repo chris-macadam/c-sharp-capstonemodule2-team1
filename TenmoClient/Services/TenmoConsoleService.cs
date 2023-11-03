@@ -75,13 +75,16 @@ namespace TenmoClient.Services
                 Console.WriteLine("-------------------------------------------");
                 foreach (Transfer transfer in transfers)
                 {
-                    if (transfer.AccountToId == tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId)
+                    int currentUserId = tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId;
+                    if (transfer.AccountToId == currentUserId || transfer.AccountFromId == currentUserId)
                     {
-                        Console.WriteLine($"{transfer.TransferId}          From: {transfer.AccountFromName}                 $ {transfer.TransactionAmount}");
+                        string fromUsername = tenmoApiService.GetUsernameFromAccountId(transfer.AccountFromId);
+                        Console.WriteLine($"{transfer.TransferId}          From: {fromUsername}                       $ {transfer.TransactionAmount}");
                     }
                     else if (transfer.AccountFromId == tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId)
                     {
-                        Console.WriteLine($"{transfer.TransferId}          To: {transfer.AccountToName}                 $ {transfer.TransactionAmount}");
+                        string toUsername = tenmoApiService.GetUsernameFromAccountId(transfer.AccountToId);
+                        Console.WriteLine($"{transfer.TransferId}          To: {toUsername}                 $ {transfer.TransactionAmount}");
                     }
                 }
                 Console.WriteLine("---------");
@@ -101,7 +104,19 @@ namespace TenmoClient.Services
                     Console.WriteLine($"From: {transfer.AccountFromName}");
                     Console.WriteLine($"To: {transfer.AccountToName}");
                     Console.WriteLine($"Type: {transfer.TransferType}");
-                    Console.WriteLine($"Status: {transfer.TransferStatus}");
+                    if (transfer.TransferStatus == 1)
+                    {
+                        Console.WriteLine($"Status: Pending");
+                    }
+                    else if(transfer.TransferStatus == 2)
+                    {
+                        Console.WriteLine($"Status: Approved");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Status: Rejected");
+
+                    }
                     Console.WriteLine($"Amount: {transfer.TransactionAmount}");
                 }
             }

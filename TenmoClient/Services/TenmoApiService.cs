@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Cryptography.Xml;
 using System.Transactions;
+using TenmoClient.Models;
 using TenmoServer.Models;
 
 namespace TenmoClient.Services
@@ -78,6 +79,13 @@ namespace TenmoClient.Services
             RestRequest request = new RestRequest($"transfer/{transfer.TransferId}");
             request.AddJsonBody(transfer);
             IRestResponse<Transfer> response = client.Put<Transfer>(request);
+            CheckForError(response);
+            return response.Data;
+        }
+        public string GetUsernameFromAccountId(int accountId)
+        {
+            RestRequest request = new RestRequest($"users/{accountId}/username");
+            IRestResponse<string> response = client.Get<string>(request);
             CheckForError(response);
             return response.Data;
         }

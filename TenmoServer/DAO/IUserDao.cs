@@ -12,5 +12,6 @@ namespace TenmoServer.DAO
         Account GetAccountByUserId(int userId);
         //decimal GetUserBalance(int userId);
         bool CheckUserBalance(decimal minAmount, int userId);
+        string GetUsernameByAccountId(int accountId);
     }
 }

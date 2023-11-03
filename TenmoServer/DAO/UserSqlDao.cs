@@ -231,5 +231,29 @@ namespace TenmoServer.DAO
             
             return account;
         }
+
+        public string GetUsernameByAccountId(int accountId)
+        {
+            string? username = null;
+            string query = "SELECT username " +
+                            "FROM tenmo_user " +
+                            "JOIN account ON account.user_id = tenmo_user.user_id " +
+                            "WHERE account.account_id = @id";
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    var cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", accountId);
+                    username = Convert.ToString(cmd.ExecuteScalar());
+                }
+                catch (SqlException ex) { throw new DaoException("SQL exception occurred", ex); }
+            }
+
+
+            return username;
+        }
     }
 }
