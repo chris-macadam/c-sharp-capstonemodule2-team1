@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq.Expressions;
 using System.Reflection.Metadata.Ecma335;
@@ -200,11 +201,23 @@ namespace TenmoServer.DAO
                             "SET transfer_status_id = @statusCode " +
                             "WHERE transfer_id = @id;";
 
-            try
+            string firstQuery = "UPDATE account " +
+                                        "SET balance -= @amount " +
+                                        "WHERE account_id = @accountFrom;";
+
+            string secQuery = "UPDATE account " +
+                                "SET balance += @amount " +
+                                "WHERE account_id = @accountTo;";
+
+            // two queries to actually move money
+            //open transaction for sql
+            using (var conn = new SqlConnection(connectionString))
             {
-                using (var conn = new SqlConnection(connectionString))
+                conn.Open();
+                SqlTransaction transaction = conn.BeginTransaction();
+                try
                 {
-                    conn.Open();
+                    
                     var cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@statusCode", statusCode);
                     cmd.Parameters.AddWithValue("@id", transferId);
@@ -215,63 +228,66 @@ namespace TenmoServer.DAO
                         throw new DaoException("Zero rows affected, expected at least one");
                     }
                 }
-                updatedTransfer = GetTransferById(transferId);
-
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new DaoException("SQL exception occurred", ex);
+                }
             }
-            catch (SqlException ex)
+            updatedTransfer = GetTransferById(transferId);
+
+            if (statusCode == 2)
             {
-                throw new DaoException("SQL exception occurred", ex);
+                TransferFunds(updatedTransfer);
             }
-
             return updatedTransfer;
         }
 
-        public bool TransferFunds(int toUser, int fromUser, decimal amount)
+        public bool TransferFunds(Transfer transfer)
         {
-            string toUserQuery =
-                "UPDATE account " +
-                "SET balance += @transfer_amount " +
-                "WHERE user_id = @to_user;";
+            string firstQuery = "UPDATE account " +
+                                        "SET balance -= @amount " +
+                                        "WHERE account_id = @accountFrom;";
 
-            string fromUserQuery =
-                "UPDATE account " +
-                "SET balance -= @transfer_amount " +
-                "WHERE user_id = @from_user;";
+            string secQuery = "UPDATE account " +
+                                "SET balance += @amount " +
+                                "WHERE account_id = @accountTo;";
 
             using (var conn = new SqlConnection(connectionString))
             {
                 conn.Open();
+                var cmd = conn.CreateCommand();
                 SqlTransaction transaction = conn.BeginTransaction();
-
                 try
                 {
-                    var cmd = new SqlCommand(toUserQuery, conn);
-                    cmd.Parameters.AddWithValue("@transfer_amount", amount);
-                    cmd.Parameters.AddWithValue("@to_user", toUser);
+                    cmd.Connection = conn;
+                    cmd.Transaction = transaction;
+
+                    cmd.CommandText = firstQuery;
+                    cmd.Parameters.AddWithValue("@amount", transfer.TransactionAmount);
+                    cmd.Parameters.AddWithValue("@accountFrom", transfer.AccountFromId);
                     int numberOfRows = cmd.ExecuteNonQuery();
                     if (numberOfRows == 0)
                     {
                         throw new DaoException("Zero rows affected, expected at least one");
                     }
-                    else
+
+                    cmd.CommandText = secQuery;
+                    cmd.Parameters.AddWithValue("@amount", transfer.TransactionAmount);
+                    cmd.Parameters.AddWithValue("accountTo", transfer.AccountToId);
+                    numberOfRows = cmd.ExecuteNonQuery();
+                    if (numberOfRows == 0)
                     {
-                        cmd = new SqlCommand(fromUserQuery, conn);
-                        cmd.Parameters.AddWithValue("@transfer_amount", amount);
-                        cmd.Parameters.AddWithValue("@from_user", fromUser);
-                        numberOfRows = cmd.ExecuteNonQuery();
-                        if (numberOfRows == 0)
-                        {
-                            throw new DaoException("Zero rows affected, expected at least one");
-                        }
+                        throw new DaoException("Zero rows affected, expected at least one");
                     }
                 }
-                catch(Exception ex) 
+                catch (Exception ex)
                 {
                     transaction.Rollback();
-                    throw new DaoException("A SQL exception occured.", ex);
+                    throw new DaoException("SQL exception occurred", ex);
                 }
-
-                return true;
+            }
+            return true;
             }
         }
 
