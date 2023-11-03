@@ -44,16 +44,16 @@ namespace TenmoServer.Controllers
         }
 
         [HttpGet("{transferId}")]
-        public ActionResult<List<Transfer>> GetTransfersById(int transferId)
+        public ActionResult<Transfer> GetTransferById(int transferId)
         {
-            List<Transfer> transfers = transferDao.GetAllTransfers(transferId);
-            if(transfers == null)
+            Transfer transfer = transferDao.GetTransferById(transferId);
+            if(transfer == null)
             {
                 return NotFound();
                 
             }
 
-            return transfers;
+            return transfer;
         }
 
         [HttpGet("pending/{userId}")]

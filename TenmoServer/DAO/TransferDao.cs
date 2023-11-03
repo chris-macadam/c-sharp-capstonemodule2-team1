@@ -67,9 +67,9 @@ namespace TenmoServer.DAO
         {
             List<Transfer> transferList = new List<Transfer>();
 
-            string query = "SELECT transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount " +
+            string query = "SELECT transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount, created_by " +
                             "FROM transfer " +
-                            "JOIN account ON transfer.account_from = account.user_id AND transfer.account_to = account.user_id " +
+                            "JOIN account ON transfer.account_from = account.account_id OR transfer.account_to = account.account_id " +
                             "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
                             "WHERE account_from = " +
                                 "(SELECT account_id FROM account WHERE user_id = @id) " +

@@ -83,7 +83,7 @@ namespace TenmoClient
             if (menuSelection == 2)
             {
                 // View your past transfers
-                List<Transfer> transfers = tenmoApiService.GetTransfers(tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId);
+                List<Transfer> transfers = tenmoApiService.GetTransfers(tenmoApiService.UserId);
                 console.PrintPastTransactions(transfers, tenmoApiService);                
                 menuSelection = console.PromptForInteger($"Please enter transfer ID to view details (0 to cancel)", 0, int.MaxValue);
                 if (menuSelection == 0)

@@ -49,9 +49,9 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
-        public List<Transfer> GetTransfers(int accountId)
+        public List<Transfer> GetTransfers(int userId)
         {
-            RestRequest request = new RestRequest($"transfer/all/{accountId}");
+            RestRequest request = new RestRequest($"transfer/all/{userId}");
             IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
             CheckForError(response);
             return response.Data;
