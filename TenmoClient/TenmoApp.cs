@@ -117,7 +117,7 @@ namespace TenmoClient
                 }
             }
 
-            			if (menuSelection == 4)
+            if (menuSelection == 4)
             {
                 // Send TE bucks
 

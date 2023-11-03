@@ -31,13 +31,13 @@ namespace TenmoClient.Services
         }
 
 
-        public decimal GetAccountBalance(int userId)
-        {
-            RestRequest request = new RestRequest($"users/{userId}/balance");
-            IRestResponse<decimal> response = client.Get<decimal>(request);
-            CheckForError(response);
-            return response.Data;
-        }
+        //public decimal GetAccountBalance(int userId)
+        //{
+        //    RestRequest request = new RestRequest($"users/{userId}/balance");
+        //    IRestResponse<decimal> response = client.Get<decimal>(request);
+        //    CheckForError(response);
+        //    return response.Data;
+        //}
 
 
         public Transfer SendTransfer(Transfer transaction, int userId)
