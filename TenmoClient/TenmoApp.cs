@@ -122,26 +122,42 @@ namespace TenmoClient
                 // Send TE bucks
 
                 List<User> users =tenmoApiService.GetUsers();
-
+                int recipientId;
+                decimal amount;
                 console.PrintUserList(users, tenmoApiService);
-
-                int recipientId = console.PromptForInteger("Enter the recipient's user Id: ");
-                decimal amount = console.PromptForDecimal("Enter the amount to send: ");
+                //checks to make sure User isn't giving money to themselves.
+                do
+                    recipientId = console.PromptForInteger("Enter the recipient's user Id: ");
+                while (recipientId == tenmoApiService.UserId);
+                //checks to make sure the amount is positive and not zero
+                do
+                    amount = console.PromptForDecimal("Enter the amount to send: ");
+                while (amount <= 0);
 
                 Console.WriteLine($"You are about to send ${amount} to {recipientId}.");
                 string confirm = console.PromptForString($"Confirm the transfer (yes/no): ");
                 if (confirm.Contains("yes", StringComparison.OrdinalIgnoreCase))
                 {
-                    Transfer transfer = new Transfer()
+                    decimal balance = tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).Balance;
+                    if (amount <= balance)
                     {
-                        TransferType = 2,
-                        TransferStatus = 2,
-                        AccountFromId = tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId,
-                        AccountToId = tenmoApiService.GetAccountFromUserId(recipientId).AccountId,
-                        TransactionAmount = amount,
-                        CreatedBy = tenmoApiService.UserId
-                    };
-                    tenmoApiService.SendTransfer(transfer, tenmoApiService.UserId);
+                        Transfer transfer = new Transfer()
+                        {
+                            TransferType = 2,
+                            TransferStatus = 2,
+                            AccountFromId = tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId,
+                            AccountToId = tenmoApiService.GetAccountFromUserId(recipientId).AccountId,
+                            TransactionAmount = amount,
+                            CreatedBy = tenmoApiService.UserId
+                        };
+                        tenmoApiService.SendTransfer(transfer, tenmoApiService.UserId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Insufficent balance to complete transaction.");
+                        console.Pause();
+                        console.PrintMainMenu(tenmoApiService.Username);
+                    }
                 }
                 else
                 {
