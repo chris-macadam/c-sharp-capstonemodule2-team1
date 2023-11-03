@@ -157,6 +157,21 @@ namespace TenmoClient.Services
                 transfer.TransferStatus = 3;
                 tenmoApiService.UpdateTransfer(transfer);
             }
+        } 
+
+        public void PrintUserList(List<User> userList, TenmoApiService tenmoApiService)
+        {
+            Console.WriteLine($"|-------------- Users --------------|");
+            Console.WriteLine($"|    Id | {tenmoApiService.UserId}                  |");
+            Console.WriteLine($"|-------+---------------------------|");
+            foreach (User user in userList)
+            {
+                if (user.UserId != tenmoApiService.UserId)
+                {
+                    Console.WriteLine($" {user.UserId} | {user.Username}");
+                }
+            }
+            Console.WriteLine($"|-----------------------------------|");
         }
 
         public void SendTEBucks()

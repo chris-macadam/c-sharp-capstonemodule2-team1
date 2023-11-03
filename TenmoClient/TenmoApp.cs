@@ -121,18 +121,9 @@ namespace TenmoClient
             {
                 // Send TE bucks
 
-                Console.WriteLine($"|-------------- Users --------------|");
-                Console.WriteLine($"|    Id | {tenmoApiService.UserId}                  |");
-                Console.WriteLine($"|-------+---------------------------|");
                 List<User> users =tenmoApiService.GetUsers();
-                foreach (User user in users)
-                {
-                    if (user.UserId != tenmoApiService.UserId)
-                    {
-                        Console.WriteLine($" {user.UserId} | {user.Username}");
-                    }
-                }
-                Console.WriteLine($"|-----------------------------------|");
+
+                console.PrintUserList(users, tenmoApiService);
 
                 string recipientUsername = console.PromptForString("Enter the recipient's username: ");
                 decimal amount = console.PromptForDecimal("Enter the amount to send: ");
