@@ -123,7 +123,7 @@ namespace TenmoServer.DAO
                     conn.Open();
                     var cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@transferType", transfer.TransferType);
-                    cmd.Parameters.AddWithValue("@transferStatus", 1);
+                    cmd.Parameters.AddWithValue("@transferStatus", transfer.TransferStatus);
                     cmd.Parameters.AddWithValue("@accountFrom", transfer.AccountFromId);
                     cmd.Parameters.AddWithValue("@accountTo", transfer.AccountToId);
                     cmd.Parameters.AddWithValue("@amount", transfer.TransactionAmount);
@@ -230,6 +230,7 @@ namespace TenmoServer.DAO
                     {
                         throw new DaoException("Zero rows affected, expected at least one");
                     }
+                    transaction.Commit();
                 }
                 catch (Exception ex)
                 {
@@ -283,6 +284,7 @@ namespace TenmoServer.DAO
                     {
                         throw new DaoException("Zero rows affected, expected at least one");
                     }
+                    transaction.Commit();
                 }
                 catch (Exception ex)
                 {
