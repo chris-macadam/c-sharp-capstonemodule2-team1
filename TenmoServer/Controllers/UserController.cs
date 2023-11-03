@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using TenmoServer.DAO;
 using TenmoServer.Models;
@@ -6,7 +7,8 @@ using TenmoServer.Models;
 namespace TenmoServer.Controllers
 {
     [Route("users")]
-    [ApiController]
+    [ApiController, Authorize]
+
     public class UserController : ControllerBase
     {
         private IUserDao userDao;
