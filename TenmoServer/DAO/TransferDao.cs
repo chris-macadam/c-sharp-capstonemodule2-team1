@@ -71,7 +71,10 @@ namespace TenmoServer.DAO
                             "FROM transfer " +
                             "JOIN account ON transfer.account_from = account.user_id AND transfer.account_to = account.user_id " +
                             "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
-                            "WHERE account_from = @id OR account_to = @id;";
+                            "WHERE account_from = " +
+                                "(SELECT account_id FROM account WHERE user_id = @id) " +
+                            "OR account_to = " +
+                                "(SELECT account_id FROM account WHERE user_id = @id);";
 
             try
             {
