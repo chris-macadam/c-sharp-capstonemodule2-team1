@@ -75,11 +75,11 @@ namespace TenmoClient.Services
                 Console.WriteLine("-------------------------------------------");
                 foreach (Transfer transfer in transfers)
                 {
-                    if (transfer.AccountToId == tenmoApiService.UserId)
+                    if (transfer.AccountToId == tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId)
                     {
                         Console.WriteLine($"{transfer.TransferId}          From: {transfer.AccountFromName}                 $ {transfer.TransactionAmount}");
                     }
-                    else if (transfer.AccountFromId == tenmoApiService.UserId)
+                    else if (transfer.AccountFromId == tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId)
                     {
                         Console.WriteLine($"{transfer.TransferId}          To: {transfer.AccountToName}                 $ {transfer.TransactionAmount}");
                     }
@@ -111,7 +111,7 @@ namespace TenmoClient.Services
         {
             if (pendingTransfers.Count == 0)
             {
-                Console.WriteLine("No previous transfers.");
+                Console.WriteLine("No pending transfers.");
             }
             else
             {
@@ -162,7 +162,7 @@ namespace TenmoClient.Services
         public void PrintUserList(List<User> userList, TenmoApiService tenmoApiService)
         {
             Console.WriteLine($"|-------------- Users --------------|");
-            Console.WriteLine($"|    Id | {tenmoApiService.UserId}                  |");
+            Console.WriteLine($"|    {tenmoApiService.UserId} | {tenmoApiService.Username}                  |");
             Console.WriteLine($"|-------+---------------------------|");
             foreach (User user in userList)
             {

@@ -83,7 +83,7 @@ namespace TenmoClient
             if (menuSelection == 2)
             {
                 // View your past transfers
-                List<Transfer> transfers = tenmoApiService.GetTransfers();
+                List<Transfer> transfers = tenmoApiService.GetTransfers(tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId);
                 console.PrintPastTransactions(transfers, tenmoApiService);                
                 menuSelection = console.PromptForInteger($"Please enter transfer ID to view details (0 to cancel)", 0, int.MaxValue);
                 if (menuSelection == 0)
@@ -125,14 +125,22 @@ namespace TenmoClient
 
                 console.PrintUserList(users, tenmoApiService);
 
-                string recipientUsername = console.PromptForString("Enter the recipient's username: ");
+                int recipientId = console.PromptForInteger("Enter the recipient's user Id: ");
                 decimal amount = console.PromptForDecimal("Enter the amount to send: ");
 
-                Console.WriteLine($"You are about to send $ {amount} to {recipientUsername}.");
+                Console.WriteLine($"You are about to send ${amount} to {recipientId}.");
                 string confirm = console.PromptForString($"Confirm the transfer (yes/no): ");
                 if (confirm.Contains("yes", StringComparison.OrdinalIgnoreCase))
                 {
-                    Transfer transfer = new Transfer();
+                    Transfer transfer = new Transfer()
+                    {
+                        TransferType = 2,
+                        TransferStatus = 2,
+                        AccountFromId = tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId,
+                        AccountToId = tenmoApiService.GetAccountFromUserId(recipientId).AccountId,
+                        TransactionAmount = amount,
+                        CreatedBy = tenmoApiService.UserId
+                    };
                     tenmoApiService.SendTransfer(transfer, tenmoApiService.UserId);
                 }
                 else
@@ -140,13 +148,43 @@ namespace TenmoClient
                     console.PrintMainMenu(tenmoApiService.Username);
                 }
 
-
             }
 
             if (menuSelection == 5)
             {
                 // Request TE bucks
+                
+                List<User> users = tenmoApiService.GetUsers();
+                
+                console.PrintUserList(users, tenmoApiService);
 
+                int requestieId = console.PromptForInteger("Enter the user Id to request from: ");
+                decimal requestAmount = console.PromptForDecimal("Enter the amount to request: ");
+
+                Console.WriteLine($"You are about to request ${requestAmount} from {requestieId}.");
+                string confirm = console.PromptForString($"Confirm the request (yes/no): ");
+
+                int from = tenmoApiService.GetAccountFromUserId(requestieId).AccountId;
+                int to = tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId;
+                
+
+                if (confirm.Contains("yes", StringComparison.OrdinalIgnoreCase))
+                {
+                    Transfer transfer = new Transfer()
+                    {
+                        TransferType = 2,
+                        TransferStatus = 1,
+                        AccountFromId = from,
+                        AccountToId = to,
+                        TransactionAmount = requestAmount,
+                        CreatedBy = tenmoApiService.UserId
+                    };
+                    tenmoApiService.SendTransfer(transfer, tenmoApiService.UserId);
+                }
+                else
+                {
+                    console.PrintMainMenu(tenmoApiService.Username);
+                }
             }
 
             if (menuSelection == 6)
