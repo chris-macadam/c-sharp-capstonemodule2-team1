@@ -189,5 +189,47 @@ namespace TenmoServer.DAO
             user.Salt = Convert.ToString(reader["salt"]);
             return user;
         }
+
+        public Account GetAccountByUserId(int userId)
+        {
+            Account account = null;
+
+            string sql = "SELECT account_id, user_id, balance FROM account WHERE user_id = @user_id";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@user_id", userId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        account = MapRowToAccount(reader);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new DaoException("SQL exception occurred", ex);
+            }
+
+            return account;
+        }
+
+        private Account MapRowToAccount(SqlDataReader reader)
+        {
+            Account account = new Account()
+            {
+                AccountId = Convert.ToInt32(reader["account_id"]),
+                UserId = Convert.ToInt32(reader["user_id"]),
+                Balance = Convert.ToDecimal(reader["balance"])
+            };
+            
+            return account;
+        }
     }
 }

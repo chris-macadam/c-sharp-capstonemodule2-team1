@@ -12,6 +12,8 @@ namespace TenmoServer.DAO
         // Consider below if necessary
         //Transaction RequestTransfer();
         List<Transfer> GetPendingTransfers(int id);
+        bool TransferFunds(int toUser, int fromUser, decimal amount);
         Transfer SetTransferStatus(int transferId, int statusCode);
+        
     }
 }
