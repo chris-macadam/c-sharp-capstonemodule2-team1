@@ -82,6 +82,7 @@ namespace TenmoClient.Services
             CheckForError(response);
             return response.Data;
         }
+
         public string GetUsernameFromAccountId(int accountId)
         {
             RestRequest request = new RestRequest($"users/{accountId}/username");
