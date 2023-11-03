@@ -151,6 +151,7 @@ namespace TenmoServer.DAO
             return newUser;
         }
 
+        /*
         public decimal GetUserBalance(int userId)
         {
             decimal balance = 0;
@@ -173,10 +174,12 @@ namespace TenmoServer.DAO
             }
             return balance;
         }
+        */
 
-        public bool CheckUserBalance(decimal minAmount, int userId)
+        public bool CheckAccountBalance(decimal minAmount, int accountId)
         {
-            decimal userBalance = GetUserBalance(userId);
+            Account account = GetAccountById(accountId);
+            decimal userBalance = account.Balance;
             return userBalance >= minAmount;
         }
 
@@ -188,6 +191,36 @@ namespace TenmoServer.DAO
             user.PasswordHash = Convert.ToString(reader["password_hash"]);
             user.Salt = Convert.ToString(reader["salt"]);
             return user;
+        }
+
+        public Account GetAccountById(int accountId)
+        {
+            Account account = null;
+
+            string sql = "SELECT account_id, user_id, balance FROM account WHERE account_id = @account_id";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@account_id", accountId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        account = MapRowToAccount(reader);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new DaoException("SQL exception occurred", ex);
+            }
+
+            return account;
         }
 
         public Account GetAccountByUserId(int userId)

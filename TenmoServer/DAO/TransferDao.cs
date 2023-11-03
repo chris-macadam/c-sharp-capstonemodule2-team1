@@ -221,6 +221,8 @@ namespace TenmoServer.DAO
                 {
                     
                     var cmd = new SqlCommand(query, conn);
+                    cmd.Transaction = transaction;
+
                     cmd.Parameters.AddWithValue("@statusCode", statusCode);
                     cmd.Parameters.AddWithValue("@id", transferId);
 

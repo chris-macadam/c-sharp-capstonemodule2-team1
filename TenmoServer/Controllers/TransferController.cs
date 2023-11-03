@@ -77,7 +77,7 @@ namespace TenmoServer.Controllers
 
             try
             {
-                bool HasSufficientBalance = userDao.CheckUserBalance(transfer.TransactionAmount, transfer.AccountFromId);
+                bool HasSufficientBalance = userDao.CheckAccountBalance(transfer.TransactionAmount, transfer.AccountFromId);
                 if (HasSufficientBalance)
                 {
                     Transfer result = transferDao.SetTransferStatus(transferId, transfer.TransferStatus);

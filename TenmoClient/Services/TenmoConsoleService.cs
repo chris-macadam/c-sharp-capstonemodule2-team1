@@ -157,8 +157,7 @@ namespace TenmoClient.Services
             if (menuSelection == 0)
             {
                 // Don't approve or reject
-                transfer.TransferStatus = 1;
-                tenmoApiService.UpdateTransfer(transfer);
+                return;
             }
             else if (menuSelection == 1)
             {
