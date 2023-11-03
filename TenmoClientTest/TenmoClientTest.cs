@@ -15,6 +15,13 @@ namespace TenmoClientTest
             apiService = new TenmoApiService(baseApiUrl);
         }
 
+        [TestCleanup]
+        public void Cleanup()
+        {
+            // Make sure no mock client is left from the test
+            TenmoApiService.client = null;
+        }
+
         [TestMethod]
         public void TestMethod1()
         {
