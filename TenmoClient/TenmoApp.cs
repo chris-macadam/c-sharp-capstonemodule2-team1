@@ -127,21 +127,30 @@ namespace TenmoClient
 
                 int recipientId = console.PromptForInteger("Enter the recipient's user Id: ");
                 decimal amount = console.PromptForDecimal("Enter the amount to send: ");
-
+                decimal balance = tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).Balance
                 Console.WriteLine($"You are about to send ${amount} to {recipientId}.");
                 string confirm = console.PromptForString($"Confirm the transfer (yes/no): ");
                 if (confirm.Contains("yes", StringComparison.OrdinalIgnoreCase))
                 {
-                    Transfer transfer = new Transfer()
+                    if (amount <= balance)
                     {
-                        TransferType = 2,
-                        TransferStatus = 2,
-                        AccountFromId = tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId,
-                        AccountToId = tenmoApiService.GetAccountFromUserId(recipientId).AccountId,
-                        TransactionAmount = amount,
-                        CreatedBy = tenmoApiService.UserId
-                    };
-                    tenmoApiService.SendTransfer(transfer, tenmoApiService.UserId);
+                        Transfer transfer = new Transfer()
+                        {
+                            TransferType = 2,
+                            TransferStatus = 2,
+                            AccountFromId = tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId,
+                            AccountToId = tenmoApiService.GetAccountFromUserId(recipientId).AccountId,
+                            TransactionAmount = amount,
+                            CreatedBy = tenmoApiService.UserId
+                        };
+                        tenmoApiService.SendTransfer(transfer, tenmoApiService.UserId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Insufficent balance to complete transaction.");
+                        console.Pause();
+                        console.PrintMainMenu(tenmoApiService.Username);
+                    }
                 }
                 else
                 {
