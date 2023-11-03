@@ -154,7 +154,7 @@ namespace TenmoServer.DAO
         public decimal GetUserBalance(int userId)
         {
             decimal balance = 0;
-            string query = "SELECT SUM(balance) FROM account WHERE user_id = @id;";
+            string query = "SELECT SUM(balance) AS totalBalance FROM account WHERE user_id = @id;";
 
             try
             {
