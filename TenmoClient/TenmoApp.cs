@@ -93,6 +93,7 @@ namespace TenmoClient
                 else
                 {
                     console.PrintTransactionDetails(menuSelection, transfers);
+                    console.Pause();
                 }                
             }
 

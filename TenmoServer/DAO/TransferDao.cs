@@ -67,7 +67,7 @@ namespace TenmoServer.DAO
         {
             List<Transfer> transferList = new List<Transfer>();
 
-            string query = "SELECT transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount, created_by " +
+            string query = "SELECT DISTINCT transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount, created_by " +
                             "FROM transfer " +
                             "JOIN account ON transfer.account_from = account.account_id OR transfer.account_to = account.account_id " +
                             "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
@@ -151,7 +151,7 @@ namespace TenmoServer.DAO
         {
             List<Transfer> pendingList = new List<Transfer>();
 
-            string query = "SELECT transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount, created_by " +
+            string query = "SELECT DISTINCT transfer_id, transfer_status_id, transfer_type_id, account_from, account_to, amount, created_by " +
                             "FROM transfer " +
                             "JOIN account ON transfer.account_from = account.user_id AND transfer.account_to = account.user_id " +
                             "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
@@ -294,6 +294,27 @@ namespace TenmoServer.DAO
             }
             return true;
             }
+
+        public string GetUsernameFromUserId(int userId)
+        {
+            string query = "SELECT username FROM tenmo_user WHERE user_id = @id;";
+            string username;
+            using (var conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    var cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", userId);
+                    username = (string)cmd.ExecuteScalar();
+                }
+                catch (Exception ex)
+                {
+                    throw new DaoException("SQL exeption occurred", ex);
+                }
+            }
+            return username;
+        }
         
 
         /// <summary>
@@ -308,7 +329,9 @@ namespace TenmoServer.DAO
             trans.TransferType = Convert.ToInt32(reader["transfer_type_id"]);
             trans.TransferStatus = Convert.ToInt32(reader["transfer_status_id"]);
             trans.AccountFromId = Convert.ToInt32(reader["account_from"]);
+            trans.AccountFromName = GetUsernameFromUserId(trans.AccountFromId);
             trans.AccountToId = Convert.ToInt32(reader["account_to"]);
+            trans.AccountToName = GetUsernameFromUserId(trans.AccountToId);
             trans.TransactionAmount = Convert.ToDecimal(reader["amount"]);
             trans.CreatedBy = Convert.ToInt32(reader["created_by"]);
 
