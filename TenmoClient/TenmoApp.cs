@@ -147,7 +147,9 @@ namespace TenmoClient
                             TransferType = 2,
                             TransferStatus = 2,
                             AccountFromId = tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId,
+                            //AccountFromName = tenmoApiService.GetUsernameFromAccountId(tenmoApiService.GetAccountFromUserId(recipientId).AccountId),
                             AccountToId = tenmoApiService.GetAccountFromUserId(recipientId).AccountId,
+                            //AccountToName = tenmoApiService.GetUsernameFromAccountId(tenmoApiService.GetAccountFromUserId(tenmoApiService.UserId).AccountId),
                             TransactionAmount = amount,
                             CreatedBy = tenmoApiService.UserId
                         };
@@ -192,7 +194,9 @@ namespace TenmoClient
                         TransferType = 2,
                         TransferStatus = 1,
                         AccountFromId = from,
+                        AccountFromName = tenmoApiService.GetUsernameFromAccountId(requestieId),
                         AccountToId = to,
+                        //AccountToName = tenmoApiService.GetUsernameFromAccountId(tenmoApiService.Username),
                         TransactionAmount = requestAmount,
                         CreatedBy = tenmoApiService.UserId
                     };
